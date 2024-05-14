@@ -25,7 +25,7 @@ public class TiendaManager : MonoBehaviour
         //esta variable seria asignada al cargar la escena
         saldo = 3000;
         carroCompra = 0; //el carro empieza valiendo 0.
-
+        saldo = datospersist.GetComponent<PersistentData>().saldo;
         saldoText.text = saldo.ToString() + " $";
         panelConfirma.SetActive(false);
 

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class gameManager : MonoBehaviour
@@ -11,7 +12,8 @@ public class gameManager : MonoBehaviour
     float runSpeedMax = 1.0f;                   // Default run speed.
     float sprintSpeedMax = 2.0f;
     public MoveBehaviour moveBehaviuorScript;
-
+    public int saldo;
+    public PersistentData persisData;
 
     public Scrollbar barraStamina;
     [SerializeField]
@@ -50,7 +52,7 @@ public class gameManager : MonoBehaviour
         barraStamina.size = 1f;
 
 
-
+        saldo = 12345;
 
         //almacenamos variables que queremos modificar
         walkSpeedMax = moveBehaviuorScript.walkSpeed;                 // Default walk speed.
@@ -126,7 +128,12 @@ public class gameManager : MonoBehaviour
     }
 
 
+    public void cargarTienda()
+    {
+        persisData.saldo = saldo;
+        SceneManager.LoadScene(1);
 
+    }
 
     public void recargaStamina(float valor)
     {
