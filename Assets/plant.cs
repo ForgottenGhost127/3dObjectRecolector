@@ -16,6 +16,10 @@ public class plant : MonoBehaviour
 
 
     // Start is called before the first frame update
+    private void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
     void Start()
     {
         manager = GameObject.FindGameObjectWithTag("gameManager");
@@ -75,7 +79,7 @@ public class plant : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             print("Colisión vegetal con Player");
-            manager.GetComponent<gameManager>().recargaStamina(valorStamine);
+            manager.GetComponent<gameManager>().recargaStamina2(valorStamine);
             Destroy(gameObject);
         }
     }

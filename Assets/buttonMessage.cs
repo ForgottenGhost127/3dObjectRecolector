@@ -1,31 +1,35 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
+//using TMPro;
 
 public class buttonMessage : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    public GameObject tiendaM;
-    public string mensaje1 = "";
-    //public int valorItem;
-
+    //public TextMeshProUGUI infoText;
+    public GameObject tienda;
+    public string mensaje = "";
+   // public int valorItem;
 
     public void Start()
     {
-        tiendaM = GameObject.FindGameObjectWithTag("TiendaManager");
+        tienda = GameObject.FindGameObjectWithTag("Tienda");
     }
+
+
     public void OnPointerEnter(PointerEventData eventData)
     {
-        tiendaM.GetComponent<TiendaManager>().escribeTextoMensaje(mensaje1);
+        
         print("El ratón está sobre el botón");
-        //tiendaM.GetComponent<TiendaManager>().sumarCarrito(valorItem);
+
+        tienda.GetComponent<tiendaManager>().escribeTextoMensaje(mensaje);
+        //tienda.GetComponent<tiendaManager>().SumarCarro(valorItem);
+
 
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        tiendaM.GetComponent<TiendaManager>().borraTextoMensaje();
+        //infoText.text = "";
+        tienda.GetComponent<tiendaManager>().borraTextoMensaje();
     }
 }

@@ -1,19 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class gameManager : MonoBehaviour
 {
+
+    public string escenaTienda;//nombre literal de la escena
+    public datosPersistentes persistenData;//script que contiene los datos que persisten
+    public int saldo;
+
 
     //las usamos para actualizar el valor en el script objetivo
     float walkSpeedMax = 0.15f;                 // Default walk speed.
     float runSpeedMax = 1.0f;                   // Default run speed.
     float sprintSpeedMax = 2.0f;
     public MoveBehaviour moveBehaviuorScript;
-    public int saldo;
-    public PersistentData persisData;
+
 
     public Scrollbar barraStamina;
     [SerializeField]
@@ -45,6 +49,29 @@ public class gameManager : MonoBehaviour
 
     public bool puedePlantar = false;
 
+
+    public void cargaTienda()
+    {
+
+
+
+
+        persistenData.Stamine = barraStamina.size;
+
+
+        persistenData.positionPlayer = player.transform.position + player.transform.forward * 2;
+        persistenData.saldo = saldo;//copiamos el saldo a los datos persistentes
+        SceneManager.LoadScene(escenaTienda);
+
+
+
+    }
+    private void Awake()
+    {
+        GameObject objetoPersistente = GameObject.FindGameObjectWithTag("datosPersistentes");
+        persistenData = objetoPersistente.GetComponent<datosPersistentes>();
+    }
+
     void Start()
     {
         panelInventario.SetActive(false);
@@ -52,7 +79,10 @@ public class gameManager : MonoBehaviour
         barraStamina.size = 1f;
 
 
-        saldo = 12345;
+
+       
+
+
 
         //almacenamos variables que queremos modificar
         walkSpeedMax = moveBehaviuorScript.walkSpeed;                 // Default walk speed.
@@ -61,14 +91,32 @@ public class gameManager : MonoBehaviour
 
 
 
+        saldo = persistenData.saldo;
+        player.transform.position = persistenData.positionPlayer;
 
-        StartCoroutine(StamineTimer());
+
+
+        //StartCoroutine(leedata());
+        StartCoroutine(StamineTimer2());
 
 
 
 
 
     }
+
+    IEnumerator leedata()
+    {
+
+        yield return null;
+        //leemos datos persistentes
+        saldo = persistenData.GetComponent<datosPersistentes>().saldo;
+        player.transform.position = persistenData.GetComponent<datosPersistentes>().positionPlayer;
+
+
+    }
+
+
 
     // Update is called once per frame
     void Update()
@@ -83,7 +131,8 @@ public class gameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.P))
         {
 
-            
+            //ponerUnaPlanta(0);
+
             panelInventario.SetActive(!panelInventario.activeSelf);
             scriptCam.enabled = !panelInventario.activeSelf;
             bh.enabled = !panelInventario.activeSelf;
@@ -91,25 +140,47 @@ public class gameManager : MonoBehaviour
 
 
         //disminuye progresivamente la barra de estamina
-       
-        
 
     }
 
     //controla el deslizamiento de la barra
-    IEnumerator StamineTimer()
+    //IEnumerator StamineTimer()
+    //{
+
+    //    while (true)
+    //    {
+    //        if (barraStamina.size > 0)
+    //        {
+    //            tiempoBarra += Time.deltaTime;
+
+
+
+    //            barraStamina.size = (1 - (tiempoBarra / tiempoBarraMaximo));
+    //            print("tiempobarra: " + tiempoBarra);
+
+
+    //            if (barraStamina.size > 0.2f)//un mínimo de velocidad
+    //            {
+
+    //                moveBehaviuorScript.walkSpeed = barraStamina.size * walkSpeedMax;
+    //                moveBehaviuorScript.runSpeed = barraStamina.size * runSpeedMax;
+    //                moveBehaviuorScript.sprintSpeed = barraStamina.size * sprintSpeedMax;
+
+    //            }
+                
+    //        }
+    //        yield return null;
+    //    }
+
+    //}
+    IEnumerator StamineTimer2()
     {
 
         while (true)
         {
             if (barraStamina.size > 0)
             {
-                tiempoBarra += Time.deltaTime;
-
-
-
-                barraStamina.size = (1 - (tiempoBarra / tiempoBarraMaximo));
-                print("tiempobarra: " + tiempoBarra);
+                barraStamina.size -= Time.deltaTime / tiempoBarraMaximo;
 
 
                 if (barraStamina.size > 0.2f)//un mínimo de velocidad
@@ -120,41 +191,45 @@ public class gameManager : MonoBehaviour
                     moveBehaviuorScript.sprintSpeed = barraStamina.size * sprintSpeedMax;
 
                 }
-                
+
             }
+           
+            
             yield return null;
         }
 
     }
 
 
-    public void cargarTienda()
-    {
-        persisData.saldo = saldo;
-        SceneManager.LoadScene(1);
 
-    }
-
-    public void recargaStamina(float valor)
+    public void recargaStamina2(float valor)
     {
 
-
-        tiempoBarra = tiempoBarra - (valor * tiempoBarraMaximo);
-
-
-
-        if (tiempoBarra<0)
-        {
-            tiempoBarra = 0;
-        }
-
-        //tiempoBarra = tiempoBarraMaximo - (tiempoBarraMaximo * barraStamina.size);
-       // barraStamina.size += valor;
-
+        barraStamina.size += valor;
 
 
 
     }
+    //public void recargaStamina(float valor)
+    //{
+
+
+    //    tiempoBarra = tiempoBarra - (valor * tiempoBarraMaximo);
+
+
+
+    //    if (tiempoBarra < 0)
+    //    {
+    //        tiempoBarra = 0;
+    //    }
+
+    //    //tiempoBarra = tiempoBarraMaximo - (tiempoBarraMaximo * barraStamina.size);
+    //    // barraStamina.size += valor;
+
+
+
+
+    //}
 
 
 
@@ -162,7 +237,7 @@ public class gameManager : MonoBehaviour
     public void ponerUnaPlanta(int indicePlanta)
     {
         print("planta?");
-        if (puedePlantar)//esta dentro del áre dee plantar
+        if (puedePlantar)//esta dentro del área de plantar
         {
             if (numeroPlantas[indicePlanta]>0)
             {
