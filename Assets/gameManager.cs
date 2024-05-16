@@ -69,7 +69,8 @@ public class gameManager : MonoBehaviour
     private void Awake()
     {
         GameObject objetoPersistente = GameObject.FindGameObjectWithTag("datosPersistentes");
-        persistenData = objetoPersistente.GetComponent<datosPersistentes>();
+        datosPersistentes datosPersistentes = objetoPersistente.GetComponent<datosPersistentes>();
+        persistenData = datosPersistentes;
     }
 
     void Start()
